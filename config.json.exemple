@@ -1,0 +1,6 @@
+{
+    "client_run": "<client ID>",
+    "channel_all_message_id": "<channge ID>",
+    "channel_win_id": "<Win Channel ID>",
+    "refresh": "<in second>"
+}
