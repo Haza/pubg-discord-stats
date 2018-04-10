@@ -1,0 +1,12 @@
+{
+    "discord": {
+        "client_run": "<discord client run ID>",
+        "channel_all_messages": "<channel ID>",
+        "channel_win_id": "<channel ID for win only>"
+    },
+    "api": {
+        "key": "<PUBG API Key>",
+        "shard": "<not used for now, just put anything :)>"
+    },
+    "refresh": "<refresh rate, in second, do not put something less than 60>"
+}
