@@ -72,14 +72,15 @@ def background_tasks():
 
             else:
                 # Multiple player.
+                plist = " et ".join([", ".join(participant_list[:-1]), participant_list[-1]] if len(participant_list) > 2 else participant_list)
                 em = discord.Embed(
-                    title=', '.join(participant_list) + ' ont fini un match !',
+                    title=plist + ' ont fini un match !',
                     description='', colour=0xDEADBF)
                 description_string = 'Il ont fini ' + str(rank) + 'èmes !'
                 if (rank == 1):
-                    em.title = 'Winner Winner Chicken Dinner ! ' + ', '.join(participant_list) + ' ont gagné !'
+                    em.title = 'Winner Winner Chicken Dinner ! ' + plist + ' ont gagné !'
                     em.colour = 0x6ebf6e
-                    em_win = discord.Embed(title='Winner Winner Chicken Dinner ! ' + ', '.join(participant_list) + ' ont gagné !',
+                    em_win = discord.Embed(title='Winner Winner Chicken Dinner ! ' + plist + ' ont gagné !',
                                        description='GG !', colour=0x6ebf6e)
                     description_string = 'Il ont fini ' + str(rank) + ' ers !'
                     yield from client.send_message(channel_win_id, embed=em_win)
