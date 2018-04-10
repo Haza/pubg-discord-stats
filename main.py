@@ -19,7 +19,6 @@ def background_tasks():
         matchsDict = {}
         for player in players:
             # Only get latest match (for now)
-
             c = conn.cursor()
             for player_match in player.matches:
                 c.execute("SELECT * FROM matches WHERE match_id = ? AND username = ?", (player_match.id, player.name))
@@ -35,21 +34,20 @@ def background_tasks():
                     matchsDict[player_match.id] = player_match.id
 
         for match_id in matchsDict:
-                # Load the match
-            found = False
+            # Load the match
             match = api.matches().get(match_id)
-            for idx, participants in enumerate(match.rosters):
-                if found == True:
-                    break
-                for team_player in participants.participants:
-                    if (team_player.name in userList['users']):
-                        found = True
-                        roster_index = idx
+
+            # Look for the roaster index, since we can't have this information
+            # using only the API.
+            roster_index = find_roaster_index(match)
 
             participant_list = []
             found_match = match.rosters[roster_index]
+            # Build participant list.
             for participant in found_match.participants:
                 participant_list.append(participant.name)
+
+            # Get final rank of the players.
             rank = found_match.stats['rank'];
             if (len(participant_list) < 2):
                 # Only one player.
@@ -93,9 +91,23 @@ def background_tasks():
                     em.add_field(name='Dégats fait', value=str(int(p.damage_dealt)))
 
             em.description = description_string
+            em.set_footer(text='match id : ' + match_id)
             yield from client.send_message(channel_all_messages, embed=em)
         conn.close()
         yield from asyncio.sleep(int(config['refresh']))
+
+
+def find_roaster_index(match):
+    found = False
+    for idx, participants in enumerate(match.rosters):
+        if found == True:
+            break
+        for team_player in participants.participants:
+            if (team_player.name in userList['users']):
+                found = True
+                roster_index = idx
+    return roster_index
+
 
 @client.event
 @asyncio.coroutine
@@ -112,8 +124,8 @@ config = json.load(open('config.json'))
 api = PUBG(config['api']['key'], Shard.PC_EU)
 userList = json.load(open('users.json'))
 
+# Pre-fly
 InitMatchesPerUser(api, userList)
-
 
 client.loop.create_task(background_tasks())
 client.run(config['discord']['client_run'])
