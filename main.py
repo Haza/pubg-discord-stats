@@ -56,14 +56,16 @@ def background_tasks():
                 em = discord.Embed(
                     title=', '.join(participant_list) + ' a fini un match !',
                     description='', colour=0xDEADBF)
+                description_string = 'Il a fini ' + str(rank) + 'ème !'
                 if (rank == 1):
                     em.title = 'Winner Winner Chicken Dinner ! ' + ', '.join(participant_list) + ' a gagné !'
                     em.colour = 0x6ebf6e
                     em_win = discord.Embed(
                         title='Winner Winner Chicken Dinner ! ' + ', '.join(participant_list) + ' a gagné !',
                         description='GG !', colour=0x6ebf6e)
+                    description_string = 'Il a fini ' + str(rank) + 'er !'
                     yield from client.send_message(channel_win_id, embed=em_win)
-                description_string = 'Il a fini ' + str(rank) + ' ème !'
+
                 em.add_field(name='kill', value=str(found_match.participants[0].kills))
                 em.add_field(name='Longest kill', value=str(int(found_match.participants[0].longest_kill)) + 'm')
                 em.add_field(name='Dégats fait', value=str(int(found_match.participants[0].damage_dealt)))
@@ -73,14 +75,16 @@ def background_tasks():
                 em = discord.Embed(
                     title=', '.join(participant_list) + ' ont fini un match !',
                     description='', colour=0xDEADBF)
+                description_string = 'Il ont fini ' + str(rank) + 'èmes !'
                 if (rank == 1):
                     em.title = 'Winner Winner Chicken Dinner ! ' + ', '.join(participant_list) + ' ont gagné !'
                     em.colour = 0x6ebf6e
                     em_win = discord.Embed(title='Winner Winner Chicken Dinner ! ' + ', '.join(participant_list) + ' ont gagné !',
                                        description='GG !', colour=0x6ebf6e)
+                    description_string = 'Il ont fini ' + str(rank) + ' ers !'
                     yield from client.send_message(channel_win_id, embed=em_win)
 
-                description_string = 'Il ont fini ' + str(rank) + ' èmes !'
+
                 for p in found_match.participants:
                     em.add_field(name='--------------', value='**' + p.name + '**', inline=False)
                     em.add_field(name='kill', value=str(p.kills))
