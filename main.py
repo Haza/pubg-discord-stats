@@ -114,6 +114,19 @@ def find_roaster_index(match):
 
 @client.event
 @asyncio.coroutine
+def on_message(message):
+    # we do not want the bot to reply to itself
+    if message.author == client.user:
+        return
+    if message.content.startswith('!players'):
+        plist = " et ".join(
+            [", ".join(userList['users'][:-1]), userList['users'][-1]] if len(userList['users']) > 2 else userList['users'])
+        msg = 'Tracked players : ' + plist.format(message)
+        yield from client.send_message(message.channel, msg)
+
+
+@client.event
+@asyncio.coroutine
 def on_ready():
     print('Logged in as')
     print(client.user.name)
