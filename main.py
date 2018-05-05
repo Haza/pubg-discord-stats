@@ -20,18 +20,21 @@ def background_tasks():
         for player in players:
             # Only get latest match (for now)
             c = conn.cursor()
-            for player_match in player.matches:
-                c.execute("SELECT * FROM matches WHERE match_id = ? AND username = ?", (player_match.id, player.name))
-                # Can't use c.rowcount
-                # @see https://stackoverflow.com/questions/839069/cursor-rowcount-always-1-in-sqlite3-in-python3k
-                if (len(c.fetchall()) >= 1):
-                    # We already have the match, nothing to do.
-                    continue
-                else:
-                    c.execute("insert into matches values (?, ?)",
-                             [player_match.id, player.name])
-                    conn.commit()
-                    matchsDict[player_match.id] = player_match.id
+            try:
+                for player_match in player.matches:
+                    c.execute("SELECT * FROM matches WHERE match_id = ? AND username = ?", (player_match.id, player.name))
+                    # Can't use c.rowcount
+                    # @see https://stackoverflow.com/questions/839069/cursor-rowcount-always-1-in-sqlite3-in-python3k
+                    if (len(c.fetchall()) >= 1):
+                        # We already have the match, nothing to do.
+                        continue
+                    else:
+                        c.execute("insert into matches values (?, ?)",
+                                 [player_match.id, player.name])
+                        conn.commit()
+                        matchsDict[player_match.id] = player_match.id
+            except AttributeError:
+                continue
 
         for match_id in matchsDict:
             # Load the match
