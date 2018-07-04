@@ -2,6 +2,7 @@ import json
 import discord
 import sqlite3
 import asyncio
+import datetime
 from pubg_python import PUBG, Shard
 from prefly import InitMatchesPerUser
 
@@ -20,7 +21,7 @@ def background_tasks():
         for player in players:
             # Only get latest match (for now)
             c = conn.cursor()
-            print('Checking user: ' + player.name)
+            print(str(datetime.datetime.now().time()) + ' | Checking user: ' + player.name)
             try:
                 for player_match in player.matches:
                     c.execute("SELECT * FROM matches WHERE match_id = ? AND username = ?", (player_match.id, player.name))
@@ -34,12 +35,12 @@ def background_tasks():
                                  [player_match.id, player.name])
                         conn.commit()
                         matchsDict[player_match.id] = player_match.id
-                        print('> Adding match ' + player_match.id + ' for user ' + player.name)
+                        print(str(datetime.datetime.now().time()) + ' | > Adding match ' + player_match.id + ' for user ' + player.name)
             except AttributeError:
                 continue
 
         for match_id in matchsDict:
-            print('Checking match ' + match_id)
+            print(str(datetime.datetime.now().time()) + ' | Checking match ' + match_id)
             # Load the match
             match = api.matches().get(match_id)
 
